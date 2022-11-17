@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleafe.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Get product</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/product}" th:object="product">
+    <label for="name">Enter your name:</label>
+    <input type="text" th:filed="*{name}" id="name"/>
+    <br/>
+    <input type="submit" value="Goo"/>
+</form>
+</body>
+</html>

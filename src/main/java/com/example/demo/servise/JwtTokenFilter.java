@@ -3,7 +3,10 @@ package com.example.demo.servise;
 import com.example.demo.excaption.BadRequest;
 import org.slf4j.Logger;
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,9 +19,14 @@ import java.util.Date;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
-    @Value("${jwtSecret}")
-    private String jwtSecret;
+    private final CustomProfileDetailsService customProfileDetailsService;
+
+    private String jwtSecret =  "abcdefgjijklmnopqrstueyxuz";
     private static String issuer = "movie.uz";
+
+    public JwtTokenFilter(CustomProfileDetailsService customProfileDetailsService) {
+        this.customProfileDetailsService = customProfileDetailsService;
+    }
 
     public String createToken(Integer id, String email) {
         JwtBuilder jwtBuilder = Jwts.builder();
@@ -82,5 +90,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        String token = header;
+        String userName = getUserName(token);
+        UserDetails profileDetails = customProfileDetailsService.loadUserByUsername(userName);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                profileDetails, null, profileDetails.getAuthorities());
+
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        filterChain.doFilter(request, response);
     }
 }

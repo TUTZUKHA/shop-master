@@ -6,12 +6,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.Filter;
 
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService customUserDetailsService;
@@ -51,8 +49,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(authEntryPointJwt);
 
         //add jwt token filter
-        http.addFilterBefore((Filter) jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(   jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 
     //Details committed for brevity
     @Bean

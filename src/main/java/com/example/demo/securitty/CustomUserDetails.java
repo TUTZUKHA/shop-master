@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.enabled;
+
 public class CustomUserDetails implements UserDetails {
     private Integer id;
     private String email;
@@ -35,11 +37,13 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        System.out.println("CustomUserDetails : getPassword");
+        return password;
     }
 
     @Override
     public String getUsername() {
+        System.out.println("CustomUserDetails:getUsername");
         return null;
     }
 
@@ -61,5 +65,20 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+    @Override
+    public String toString() {
+        return "CustomUserDetails{" +
+                "id=" + id +
+                ", username='" + getUsername() + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", role='" + role + '\'' +
+                ", authorityList=" + authorityList +
+                '}';
+    }
+
+    public int getId() {
+        return id;
     }
 }
